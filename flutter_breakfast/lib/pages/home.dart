@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_breakfast/models/cattegory_model.dart';
+import 'package:flutter_breakfast/models/category_model.dart';
 import 'package:flutter_breakfast/models/diet_model.dart';
 import 'package:flutter_breakfast/models/popular_model.dart';
 import 'package:flutter_breakfast/models/gradient_text.dart';
