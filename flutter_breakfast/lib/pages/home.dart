@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_breakfast/models/cattegory_model.dart';
 import 'package:flutter_breakfast/models/diet_model.dart';
+import 'package:flutter_breakfast/models/popular_model.dart';
+import 'package:flutter_breakfast/models/gradient_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,10 +17,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<CategoryModel> categories = [];
   List<DietModel> diets = [];
+  List<PopularDietsModel> popularDiets = [];
 
   void _getInitialInfo() {
     categories = CategoryModel.getCategories();
     diets = DietModel.getDiets();
+    popularDiets = PopularDietsModel.getPopularDiets();
   }
 
   @override
@@ -27,18 +31,140 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: appBar(),
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
         children: [
           _searchField(),
           const SizedBox(height: 40),
           _categoriesSection(),
+          const SizedBox(height: 40),
+          _dietSection(),
+          const SizedBox(height: 40),
+          _popularDietSection(),
           const SizedBox(
             height: 40,
           ),
-          _dietSection(),
+          _footer(),
         ],
       ),
+    );
+  }
+
+  Column _footer() {
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      // crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 30),
+          child: GradientText(
+            'Made with ♥️',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+            gradient: LinearGradient(
+              colors: [
+                Color(0xffC58BF2),
+                Color(0xff92A3FD),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _popularDietSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text(
+            'Popular',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        ListView.separated(
+          itemCount: popularDiets.length,
+          shrinkWrap: true,
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 15,
+          ),
+          padding: const EdgeInsets.only(
+            right: 20,
+            left: 20,
+          ),
+          itemBuilder: (context, index) {
+            return Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: popularDiets[index].boxIsSelected
+                    ? Colors.white
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: popularDiets[index].boxIsSelected
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xff1D1617).withOpacity(0.07),
+                          offset: const Offset(0, 10),
+                          blurRadius: 40,
+                          spreadRadius: 0,
+                        )
+                      ]
+                    : [],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SvgPicture.asset(
+                    popularDiets[index].iconPath,
+                    width: 65,
+                    height: 65,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        popularDiets[index].name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        '${popularDiets[index].level} | ${popularDiets[index].duration} | ${popularDiets[index].calorie}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 13,
+                          color: Color(0xfff786F72),
+                        ),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () => {},
+                    child: SvgPicture.asset(
+                      'assets/icons/Button.svg',
+                      height: 30,
+                      width: 30,
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
